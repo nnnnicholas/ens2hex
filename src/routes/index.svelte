@@ -52,11 +52,14 @@
 		// console.log(b);
 		// output = b.toString();
 	}
+
+
 	async function update() {
 		output = '';
-		convert().then(() => {
-			output = b.reverse().toString();
-		});
+		b=[];
+		await convert();
+		b = b.reverse();
+		output = b.toString();
 	}
 </script>
 
