@@ -50,6 +50,7 @@
 	}
 	async function update(){
 		await convert();
+		b = b.reverse();
 		output = b.toString();
 	}
 </script>
