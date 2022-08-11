@@ -89,7 +89,7 @@
 						' function supportsInterface(bytes4 interfaceID) external view returns (bool)'
 					];
 					let contract = new ethers.Contract(e, abi, provider);
-					contract.supportsInterface('onERC721Received(address,address,uint256,bytes)') ===
+					contract.supportsInterface('onERC721Received(address,address,uint256,bytes)') === // TO DO doesn't work 
 					'0x150b7a02'
 						? '' // does support
 						: problems.push(e); // does NOT support
