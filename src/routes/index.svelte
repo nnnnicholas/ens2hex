@@ -77,8 +77,7 @@
 <body>
 	<h1>ENS2WalletConverter</h1>
 	<p>
-		Paste a CSV list of ENS and/or hex (0x) format addresses. Press Convert to convert them to all
-		hex format addresses.
+		Convert a CSV list of ENS and hex (0x) format addresses to checksummed hex format addresses.
 	</p>
 	<h3>Addresses to convert</h3>
 	<p style="color: grey; font-style: italic; margin-top: 0; padding-top: 0">
