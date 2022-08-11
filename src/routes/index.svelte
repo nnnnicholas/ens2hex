@@ -33,20 +33,20 @@
 				try {
 					r = await ethers.utils.getAddress(e);
 				} catch (error) {
-					alert(e.toString() + ' is not a valid hex address');
+					alert(e.toString() + ' is not a valid hex address')
 					console.error('Promise rejected!', error);
 				}
-				b.push(r);
+				r === null ? alert(e.toString() + ' is not a valid hex address') : b.push(r);
 				console.log(r);
 			} else {
 				let r;
 				try {
 					r = await provider.resolveName(e);
 				} catch (error) {
-					alert(e.toString() + ' is not a valid ens name');
+					alert(e.toString() + ' is not a valid name')
 					console.error('Promise rejected!', error);
 				}
-				b.push(r);
+				r === null ? alert(e.toString() + ' is not a valid name') : b.push(r);
 				console.log(r);
 			}
 		}
@@ -66,12 +66,12 @@
 		});
 	}
 
- const onKeyPress = e => {
-		if (e.charCode === 13 ){
+	const onKeyPress = (e) => {
+		if (e.charCode === 13) {
 			e.preventDefault();
 			update();
 		}
-	}
+	};
 </script>
 
 <body>
