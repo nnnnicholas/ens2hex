@@ -53,13 +53,16 @@
 		// output = b.toString();
 	}
 
-
-	async function update() {
+	async function emptyOutput(){
 		output = '';
 		b=[];
-		await convert();
-		b = b.reverse();
-		output = b.toString();
+	}
+	async function update() {
+		await emptyOutput();
+		convert().then(() => {
+			// b = b.reverse();
+			output = b.toString();
+		});
 	}
 </script>
 
