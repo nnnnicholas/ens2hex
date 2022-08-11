@@ -101,6 +101,7 @@
 	<textarea id="output" bind:value={output} readonly />
 	<div id="spacer" />
 	<div id="footer">
+		<a href = "https://twitter.com/nnnnicholas">@nnnnicholas</a>
 		<a href="https://github.com/nnnnicholas/ens2hex">github</a>
 	</div>
 </body>
