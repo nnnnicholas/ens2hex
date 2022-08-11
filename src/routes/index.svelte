@@ -81,7 +81,7 @@
 	</p>
 	<h3>Addresses to convert</h3>
 	<p style="color: grey; font-style: italic; margin-top: 0; padding-top: 0">
-		CSV values (with or without spaces)
+		CSV list of addresses (with or without spaces)
 	</p>
 	<textarea
 		id="input"
