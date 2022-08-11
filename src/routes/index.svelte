@@ -11,7 +11,6 @@
 	import { ethers } from 'ethers';
 	import { formatEther } from 'ethers/lib/utils';
 
-
 	const RPC_HOST = `https://cloudflare-eth.com/`;
 	const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 
@@ -26,36 +25,38 @@
 		let i = JSON.parse(JSON.stringify(input)); // duplicate object
 		i = i.replace(/\s+/g, ''); // remove spaces
 		let a = i.split(',');
-		for (let e of a){
+		for (let e of a) {
 			e = e.toLowerCase(); // convert to lowercase
 			if (e.slice(0, 2) == '0x') {
 				// if hex address
 				let r;
 				try {
 					r = await ethers.utils.getAddress(e);
-					b.push(r);
 				} catch (error) {
+					alert(e.toString() + ' is not a valid hex address');
 					console.error('Promise rejected!', error);
 				}
+				b.push(r);
 				console.log(r);
 			} else {
 				let r;
 				try {
 					r = await provider.resolveName(e);
-					b.push(r);
 				} catch (error) {
+					alert(e.toString() + ' is not a valid ens name');
 					console.error('Promise rejected!', error);
 				}
+				b.push(r);
 				console.log(r);
 			}
-		};
+		}
 		// console.log(b);
 		// output = b.toString();
 	}
 
-	async function emptyOutput(){
+	async function emptyOutput() {
 		output = '';
-		b=[];
+		b = [];
 	}
 	async function update() {
 		await emptyOutput();
@@ -63,6 +64,13 @@
 			// b = b.reverse();
 			output = b.toString();
 		});
+	}
+
+ const onKeyPress = e => {
+		if (e.charCode === 13 ){
+			e.preventDefault();
+			update();
+		}
 	}
 </script>
 
@@ -79,6 +87,7 @@
 	<textarea
 		id="input"
 		bind:value={input}
+		on:keypress={onKeyPress}
 		placeholder="nnnnicholas.eth, 0x2638bf07baa4a246af902ad19d3d14e0dff0ce97, vitalik.eth, ..."
 	/>
 	<input id="button" type="button" value="Convert" on:click={update} />
