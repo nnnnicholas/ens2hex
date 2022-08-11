@@ -75,7 +75,7 @@
 </script>
 
 <body>
-	<h1>ENS2WalletConverter</h1>
+	<h1>ens2hex</h1>
 	<p>
 		Convert a CSV list of ENS and hex (0x) format addresses to checksummed hex addresses.
 	</p>
