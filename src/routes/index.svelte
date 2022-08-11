@@ -49,8 +49,44 @@
 		}
 	}
 
-	 function dedupe(array) {
+	function dedupe(array) {
 		return [...new Set(array)];
+	}
+
+	async function isContract(address) {
+		// returns true if passed address is a contract
+		if (address.slice(0, 2) != '0x' || address.length != 42) {
+			// check if input string is an address
+			console.error('isContract(): Malformed address input');
+		} else {
+			try {
+				const code = await provider.getCode(address);
+				if (code !== '0x') return true; // is a contract
+			} catch (error) {
+				console.error(error);
+			}
+			return false; // is not a contract
+		}
+	}
+
+	async function erc721receiver(array) {
+		let problems = []; // addresses corresponding to contracts that do not support IERC721Receiver
+		for (let e of array) {
+			// Check if it's a contract
+			let isItAContract;
+			try {
+				isItAContract = await isContract(e);
+			} catch (error) {
+				console.error(error);
+			}
+			if(isItAContract === true){
+				try{
+					await new ethers.Contract(e); // TO DO UNFINISHED
+				}
+			}
+			//Check if it supports ERC721Receiver
+		}
+		// return ; // Return array of contract addresses that do not implement ERC721Receiver
 	}
 
 	async function emptyOutput() {
@@ -62,6 +98,7 @@
 		convert()
 			.then(() => {
 				deduplication === true ? (b = dedupe(b)) : '';
+				// erc721receiver === true ? (b = erc721receiver(b)) : '';
 			})
 			.then(() => {
 				// b = b.reverse();
@@ -90,7 +127,7 @@
 		on:keypress={onKeyPress}
 		placeholder="nnnnicholas.eth, 0x2638bf07baa4a246af902ad19d3d14e0dff0ce97, vitalik.eth, ..."
 	/>
-	<div id = "actions">
+	<div id="actions">
 		<div>
 			<label for="deduplication">Deduplicate</label>
 			<input type="checkbox" id="deduplication" bind:checked={deduplication} />
@@ -101,7 +138,8 @@
 	<textarea id="output" bind:value={output} readonly />
 	<div id="spacer" />
 	<div id="footer">
-		<a href = "https://twitter.com/nnnnicholas">@nnnnicholas</a> | <a href="https://github.com/nnnnicholas/ens2hex">github</a>
+		<a href="https://twitter.com/nnnnicholas">@nnnnicholas</a> |
+		<a href="https://github.com/nnnnicholas/ens2hex">github</a>
 	</div>
 </body>
 
@@ -125,12 +163,12 @@
 		align-self: end;
 		padding-bottom: 40px;
 	}
-	#actions{
+	#actions {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 	}
-	#button{
-		flex-grow:1;
+	#button {
+		flex-grow: 1;
 	}
 </style>
