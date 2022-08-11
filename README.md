@@ -1,3 +1,9 @@
+# ens2hex
+
+This lil tool converts a CSV of mixed ENS and hex addresses into a CSV of checksummed hex addresses.
+
+The code is in `src/routes/index.svelte`. The rest is boilerplate.
+
 # Svelte Kit Ethers Template
 
 ## Basic Setup
