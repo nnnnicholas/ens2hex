@@ -14,14 +14,11 @@
 	const RPC_HOST = `https://cloudflare-eth.com/`;
 	const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 
-	// const provider = ethers.getDefaultProvider('mainnet');
-
 	let input = '';
 	let output = '';
+	let deduplication = false;
 	let b = [];
 	async function convert() {
-		// output = ''
-		// b = [];
 		let i = JSON.parse(JSON.stringify(input)); // duplicate object
 		i = i.replace(/\s+/g, ''); // remove spaces
 		let a = i.split(',');
@@ -33,7 +30,7 @@
 				try {
 					r = await ethers.utils.getAddress(e);
 				} catch (error) {
-					alert(e.toString() + ' is not a valid hex address')
+					alert(e.toString() + ' is not a valid hex address');
 					console.error('Promise rejected!', error);
 				}
 				r === null ? alert(e.toString() + ' is not a valid hex address') : b.push(r);
@@ -43,15 +40,17 @@
 				try {
 					r = await provider.resolveName(e);
 				} catch (error) {
-					alert(e.toString() + ' is not a valid name')
+					alert(e.toString() + ' is not a valid name');
 					console.error('Promise rejected!', error);
 				}
 				r === null ? alert(e.toString() + ' is not a valid name') : b.push(r);
 				console.log(r);
 			}
 		}
-		// console.log(b);
-		// output = b.toString();
+	}
+
+	 function dedupe(array) {
+		return [...new Set(array)];
 	}
 
 	async function emptyOutput() {
@@ -60,10 +59,14 @@
 	}
 	async function update() {
 		await emptyOutput();
-		convert().then(() => {
-			// b = b.reverse();
-			output = b.toString();
-		});
+		convert()
+			.then(() => {
+				deduplication === true ? (b = dedupe(b)) : '';
+			})
+			.then(() => {
+				// b = b.reverse();
+				output = b.toString();
+			});
 	}
 
 	const onKeyPress = (e) => {
@@ -76,9 +79,7 @@
 
 <body>
 	<h1>ens2hex</h1>
-	<p>
-		Convert a CSV list of ENS and hex (0x) format addresses to checksummed hex addresses.
-	</p>
+	<p>Convert a CSV list of ENS and hex (0x) format addresses to checksummed hex addresses.</p>
 	<h3>Addresses to convert</h3>
 	<p style="color: grey; font-style: italic; margin-top: 0; padding-top: 0">
 		CSV list of addresses (with or without spaces)
@@ -89,7 +90,13 @@
 		on:keypress={onKeyPress}
 		placeholder="nnnnicholas.eth, 0x2638bf07baa4a246af902ad19d3d14e0dff0ce97, vitalik.eth, ..."
 	/>
-	<input id="button" type="button" value="Convert" on:click={update} />
+	<div id = "actions">
+		<div>
+			<label for="deduplication">Deduplicate</label>
+			<input type="checkbox" id="deduplication" bind:checked={deduplication} />
+		</div>
+		<input id="button" type="button" value="Convert" on:click={update} />
+	</div>
 	<h3>Results</h3>
 	<textarea id="output" bind:value={output} readonly />
 	<div id="spacer" />
@@ -117,5 +124,13 @@
 	#footer {
 		align-self: end;
 		padding-bottom: 40px;
+	}
+	#actions{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	#button{
+		flex-grow:1;
 	}
 </style>
