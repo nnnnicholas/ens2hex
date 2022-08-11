@@ -25,18 +25,9 @@
 		let a = i.split(',');
 		for (let e of a) {
 			e = e.toLowerCase(); // convert to lowercase
-			if (e.slice(0, 2) == '0x' && e.length == 42) {
-				// if hex address
-				let r;
-				try {
-					r = await ethers.utils.getAddress(e);
-				} catch (error) {
-					alert(e.toString() + ' is not a valid hex address');
-					console.error('Promise rejected!', error);
-				}
-				r === null ? alert(e.toString() + ' is not a valid hex address') : b.push(r);
-				console.log(r);
-			} else {
+
+			if (e.slice(-4) === '.eth') {
+				// if it ends in .eth
 				let r;
 				try {
 					r = await provider.resolveName(e);
@@ -44,7 +35,18 @@
 					alert(e.toString() + ' is not a valid name');
 					console.error('Promise rejected!', error);
 				}
-				r === null ? alert(e.toString() + ' is not a valid name') : b.push(r);
+				r === null ? alert(e.toString() + ' does not exist or it\'s Resolver has not been configured to point to an Ethereum address.') : b.push(r);
+				console.log(r);
+			} else {
+				// if it doesn't end in .eth
+				let r;
+				try {
+					r = await ethers.utils.getAddress(e);
+				} catch (error) {
+					alert(e.toString() + ' is not a valid .eth or hex address.');
+					console.error('Promise rejected!', error);
+				}
+				r === null ? alert(e.toString() + ' is not a valid .eth or hex address.') : b.push(r);
 				console.log(r);
 			}
 		}
@@ -139,7 +141,7 @@
 	<p>Convert a CSV list of ENS and hex (0x) format addresses to checksummed hex addresses.</p>
 	<h3>Addresses to convert</h3>
 	<p style="color: grey; font-style: italic; margin-top: 0; padding-top: 0">
-		CSV list of addresses (with or without spaces)
+		Comma separated (CSV) list of addresses (with or without spaces)
 	</p>
 	<textarea
 		id="input"
