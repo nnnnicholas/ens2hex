@@ -24,7 +24,7 @@
 		let a = i.split(',');
 		for (let e of a) {
 			e = e.toLowerCase(); // convert to lowercase
-			if (e.slice(0, 2) == '0x') {
+			if (e.slice(0, 2) == '0x' && e.length == 42) {
 				// if hex address
 				let r;
 				try {
