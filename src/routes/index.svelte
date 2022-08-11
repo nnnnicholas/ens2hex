@@ -24,8 +24,19 @@
 		let a = i.split(',');
 		for (let e of a) {
 			e = e.toLowerCase(); // convert to lowercase
-			if (e.slice(0, 2) == '0x' && e.length == 42) {
-				// if hex address
+
+			if (e.slice(-4) === '.eth') {
+				let r;
+				try {
+					r = await provider.resolveName(e);
+				} catch (error) {
+					alert(e.toString() + ' is not a valid name');
+					console.error('Promise rejected!', error);
+				}
+				r === null ? alert(e.toString() + ' is not a valid name or has not been configured') : b.push(r);
+				console.log(r);
+			} else {
+				// if not .eth address
 				let r;
 				try {
 					r = await ethers.utils.getAddress(e);
@@ -35,21 +46,11 @@
 				}
 				r === null ? alert(e.toString() + ' is not a valid hex address') : b.push(r);
 				console.log(r);
-			} else {
-				let r;
-				try {
-					r = await provider.resolveName(e);
-				} catch (error) {
-					alert(e.toString() + ' is not a valid name');
-					console.error('Promise rejected!', error);
-				}
-				r === null ? alert(e.toString() + ' is not a valid name') : b.push(r);
-				console.log(r);
 			}
 		}
 	}
 
-	 function dedupe(array) {
+	function dedupe(array) {
 		return [...new Set(array)];
 	}
 
@@ -90,7 +91,7 @@
 		on:keypress={onKeyPress}
 		placeholder="nnnnicholas.eth, 0x2638bf07baa4a246af902ad19d3d14e0dff0ce97, vitalik.eth, ..."
 	/>
-	<div id = "actions">
+	<div id="actions">
 		<div>
 			<label for="deduplication">Deduplicate</label>
 			<input type="checkbox" id="deduplication" bind:checked={deduplication} />
@@ -101,7 +102,8 @@
 	<textarea id="output" bind:value={output} readonly />
 	<div id="spacer" />
 	<div id="footer">
-		<a href = "https://twitter.com/nnnnicholas">@nnnnicholas</a> | <a href="https://github.com/nnnnicholas/ens2hex">github</a>
+		<a href="https://twitter.com/nnnnicholas">@nnnnicholas</a> |
+		<a href="https://github.com/nnnnicholas/ens2hex">github</a>
 	</div>
 </body>
 
@@ -125,12 +127,12 @@
 		align-self: end;
 		padding-bottom: 40px;
 	}
-	#actions{
+	#actions {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 	}
-	#button{
-		flex-grow:1;
+	#button {
+		flex-grow: 1;
 	}
 </style>
