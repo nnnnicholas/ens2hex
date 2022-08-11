@@ -9,7 +9,7 @@
 	} from '$lib/stores/provider';
 	import { balanceOnBlock } from '$lib/stores/state';
 	import { ethers } from 'ethers';
-	import { formatEther } from 'ethers/lib/utils';
+	import { AbiCoder, formatEther } from 'ethers/lib/utils';
 
 	const RPC_HOST = `https://cloudflare-eth.com/`;
 	const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
@@ -17,6 +17,7 @@
 	let input = '';
 	let output = '';
 	let deduplication = false;
+	let receivable = false;
 	let b = [];
 	async function convert() {
 		let i = JSON.parse(JSON.stringify(input)); // duplicate object
@@ -79,14 +80,23 @@
 			} catch (error) {
 				console.error(error);
 			}
-			if(isItAContract === true){
-				try{
-					await new ethers.Contract(e); // TO DO UNFINISHED
+			if (isItAContract === true) {
+				try {
+					//Check if it supports ERC721Receiver
+					const abi = [
+						' function supportsInterface(bytes4 interfaceID) external view returns (bool)'
+					];
+					let contract = new ethers.Contract(e, abi, provider);
+					contract.supportsInterface('onERC721Received(address,address,uint256,bytes)') ===
+					'0x150b7a02'
+						? '' // does support
+						: problems.push(e); // does NOT support
+				} catch (error) {
+					console.error(error);
 				}
 			}
-			//Check if it supports ERC721Receiver
 		}
-		// return ; // Return array of contract addresses that do not implement ERC721Receiver
+		return problems; // Return array of contract addresses that do not implement ERC721Receiver
 	}
 
 	async function emptyOutput() {
@@ -98,7 +108,17 @@
 		convert()
 			.then(() => {
 				deduplication === true ? (b = dedupe(b)) : '';
-				// erc721receiver === true ? (b = erc721receiver(b)) : '';
+			})
+			.then(async () => {
+				if (receivable === true) {
+					let probs = await erc721receiver(b);
+					probs.length != 0
+						? 	alert(
+								'The following addresses correspond to contracts that do not implement ERC721Receivable and will fail a safeTransferFrom of an NFT.\n\n' +
+									probs.toString()
+						  )
+						: '';
+				}
 			})
 			.then(() => {
 				// b = b.reverse();
@@ -129,8 +149,11 @@
 	/>
 	<div id="actions">
 		<div>
-			<label for="deduplication">Deduplicate</label>
 			<input type="checkbox" id="deduplication" bind:checked={deduplication} />
+			<label for="deduplication">Deduplicate</label>
+			<br>
+			<input type="checkbox" id="receivable" bind:checked={receivable} />
+			<label for="receivable">Supports ERC721Receiver</label>
 		</div>
 		<input id="button" type="button" value="Convert" on:click={update} />
 	</div>
@@ -169,6 +192,10 @@
 		justify-content: space-between;
 	}
 	#button {
-		flex-grow: 1;
+		/* flex-grow: 1; */
+		width: 80px;
+		height: 44px;
+		background-color: rgb(120, 120, 208);
+		color:white;
 	}
 </style>
