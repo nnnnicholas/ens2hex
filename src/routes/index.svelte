@@ -11,7 +11,11 @@
 	import { ethers } from 'ethers';
 	import { formatEther } from 'ethers/lib/utils';
 
-	const provider = ethers.getDefaultProvider('mainnet');
+
+	const RPC_HOST = `https://cloudflare-eth.com/`;
+	const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
+
+	// const provider = ethers.getDefaultProvider('mainnet');
 
 	let input = '';
 	let output = '';
@@ -22,7 +26,7 @@
 		let i = JSON.parse(JSON.stringify(input)); // duplicate object
 		i = i.replace(/\s+/g, ''); // remove spaces
 		let a = i.split(',');
-		a.forEach(async (e) => {
+		for (let e of a){
 			e = e.toLowerCase(); // convert to lowercase
 			if (e.slice(0, 2) == '0x') {
 				// if hex address
@@ -44,7 +48,7 @@
 				}
 				console.log(r);
 			}
-		});
+		};
 		// console.log(b);
 		// output = b.toString();
 	}
