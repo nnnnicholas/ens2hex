@@ -14,8 +14,8 @@
 	const provider = ethers.getDefaultProvider('mainnet');
 
 	let input = '';
-	let output='';
-	let b=[];
+	let output = '';
+	let b = [];
 	async function convert() {
 		// output = ''
 		// b = [];
@@ -24,22 +24,22 @@
 		let a = i.split(',');
 		a.forEach(async (e) => {
 			e = e.toLowerCase(); // convert to lowercase
-			if (e.slice(0, 2) == '0x') { // if hex address
+			if (e.slice(0, 2) == '0x') {
+				// if hex address
 				let r;
 				try {
 					r = await ethers.utils.getAddress(e);
-					// e = r;
 					b.push(r);
 				} catch (error) {
 					console.error('Promise rejected!', error);
 				}
+				console.log(r);
 			} else {
-				let r; 
+				let r;
 				try {
 					r = await provider.resolveName(e);
-					// e=r;
 					b.push(r);
-				} catch(error) {
+				} catch (error) {
 					console.error('Promise rejected!', error);
 				}
 				console.log(r);
@@ -48,10 +48,11 @@
 		// console.log(b);
 		// output = b.toString();
 	}
-	async function update(){
-		await convert();
-		b = b.reverse();
-		output = b.toString();
+	async function update() {
+		output = '';
+		convert().then(() => {
+			output = b.reverse().toString();
+		});
 	}
 </script>
 
@@ -72,19 +73,31 @@
 	/>
 	<input id="button" type="button" value="Convert" on:click={update} />
 	<h3>Results</h3>
-	<textarea id="output" bind:value={output}
-	readonly />
+	<textarea id="output" bind:value={output} readonly />
+	<div id="spacer" />
+	<div id="footer">
+		<a href="https://github.com/nnnnicholas/ens2hex">github</a>
+	</div>
 </body>
 
 <style>
 	body {
 		display: flex;
 		flex-direction: column;
+		min-height: 100vh;
+		margin: 0 40px;
 	}
 	textarea {
 		height: 10em;
 	}
 	p {
 		margin-top: 0;
+	}
+	#spacer {
+		flex-grow: 1;
+	}
+	#footer {
+		align-self: end;
+		padding-bottom: 40px;
 	}
 </style>
