@@ -1,15 +1,15 @@
 const config = {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+	content: ['./src/**/*.{html,js,svelte,ts}'],
 
-  theme: {
-    extend: {
-      fontFamily: {
-        serif: ['Open Sans', 'sans-serif']
-      }
-    }
-  },
+	theme: {
+		extend: {
+			fontFamily: {
+				serif: ['Open Sans', 'sans-serif']
+			}
+		}
+	},
 
-  plugins: []
+	plugins: []
 };
 
 module.exports = config;
